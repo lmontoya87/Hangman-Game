@@ -1,0 +1,42 @@
+html, body {
+	font-family: 'Arial', Helvetica-Neue, Helvetica, sans-serif;
+	text-align: center;
+	width: 625px;
+	background-color: rgb(255,211,2);
+
+}
+
+h1 {
+	font-family: Georgia, Times, "Times New Roman", serif;
+	font-size: 2.5em;
+	line-height: 2.8em;
+	font-weight: bold;
+	text-align: center;
+	color: white;
+	background-color: #4aaaa5;
+}
+
+h2{
+	font-family: Arial san serif;
+	
+}
+#currentWord p {
+	text-align: center;
+	color: blue;
+	font-weight: bold;
+	font-size: x-large;
+}
+
+#currentWord {
+	width: 400px;
+	height: 100px;
+	margin: 50px 100px;
+	padding-top:40px;
+	border: 4px solid;
+	text-align: center;
+	font-family: 'Pangolin', cursive;
+	font-size: larger;
+}
+
+
+

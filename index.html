@@ -1,0 +1,170 @@
+
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Hangman Game</title>
+	<link rel="stylesheet" href="assets/css/reset.css">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<link href="https://fonts.googleapis.com/css?family=Pangolin" rel="stylesheet">
+	
+</head>
+<body>
+	<header><img src="assets/images/319264.jpg" class="theFamily" alt="The Simpsons"></header>
+	<h2 id="start"> Press any key to get started! </h2>
+		
+	<div id="currentWord">
+		<p>Current Word:</p>
+			<div id="placeHolder"></div>
+	</div>
+
+	<div id="totals">
+		<p id="guessed">Letters Already Guessed: <span></span></p>
+		<p id="wins">Wins: <span></span></p>	
+	</div>	
+	
+
+	<script type="text/javascript">	
+		//page load and global variables//
+		document.getElementById("currentWord").style.display = "none";
+		document.getElementById("totals").style.display = "none";
+
+		var i;
+		var words = ["donuts", "bart", "woohoo", "homer", "doh", "lisa"];
+		var counter = 0;
+		var badLtrCounter = 0;
+		var goodLtrCounter = 0;
+		var userGuess = "";
+		var totalWins = 0;
+
+		//Starts the Game//
+		document.onkeyup = function genesis() { //must be within the function
+			var activeWord = words[counter]; //must be within the function
+			var wordBreak = words[counter].split(""); //must be within the function
+			var underline = document.getElementById("placeHolder"); //must be within the function
+
+			//Creates place holder lines for current word and displays in html//
+			function nextWord() {
+				var wordBreak = words[counter].split("");			
+				for (i = 0; i < wordBreak.length; i++) {
+					var box = document.createElement("div");
+					var spacer = document.createTextNode(" ");
+					box.setAttribute("style","border-bottom:solid 1px blue; width:30px; display:inline-block; text-align:center; vertical-align:bottom");
+					underline.appendChild(box);
+					underline.appendChild(spacer);
+				}
+				
+			}
+
+			//Checks to see if game already played and prepares//
+		 	if (document.getElementById("currentWord").style.display === "none") {
+
+		 		//displays game information in html - current word fields, letters already guessed and wins//
+		 		document.getElementById("currentWord").style.display = "block";
+				document.getElementById("totals").style.display = "block";
+		 		
+		 		//Hides start game message from html//
+		 		document.getElementById("start").innerHTML = "Use your keyboard to select the letters for the word!";
+
+		 		nextWord();
+			}
+			
+			//Begins game - captures letters and applies to placeholders//
+			else {
+				var letter = event.key.toLowerCase();
+
+			
+				if (userGuess.indexOf(letter) > -1) {
+	console.log("WHOOPS - you already chose that letter");
+	
+					return false;
+				}		
+
+				//Sets up variable for already used letters and displays them in html// 
+				var guessedLtrField = document.getElementById("guessed").childNodes[1];	
+				userGuess = userGuess + letter + ", ";		
+				guessedLtrField.innerHTML = userGuess;
+
+				//Grabs index positions of single and multiple letters based on user guesses and places in array//
+				var indices = [];		
+				for (i=0; i<activeWord.length; i++) {
+					if (activeWord[i] === letter) indices.push(i); 
+				}
+				//counts the strikes against the user - toward the hangman//
+				if (badLtrCounter < 6) { //matches number of hangman attempts
+					//Grabs index positions of letters in the active word//
+					if (indices.length !=0) {				
+						for (i=0; i < indices.length; i++) {
+							var index = indices[i];
+							underline.children[index].innerHTML = letter;
+						}//grabs correct letters in the active word//
+						goodLtrCounter = goodLtrCounter+indices.length-1;
+						goodLtrCounter++;
+						if (goodLtrCounter >= wordBreak.length) {
+	console.log("CONGRATULATIONS YOU SOLVED IT");
+							//tracks total wins and displays in html//
+							totalWins++;
+							document.getElementById("wins").childNodes[1].innerHTML = totalWins;
+							endWord();	
+							document.getElementById("homerWooHoo").play();
+						}
+					}
+					//tracks incorrect letters//
+					else {
+						badLtrCounter++;
+	console.log("BAD LETTER CHOICE");
+					}
+				}
+				//removes the placeholders from the html and goes to next game//
+				else {
+					document.getElementById("currentWord").style.display === "none"
+	console.log("Too many bad letters - NEXT GAME");
+	
+					endWord();
+				}
+			}
+
+			//resets counters back to zero//
+			function endWord() {
+				badLtrCounter = 0;
+				goodLtrCounter = 0;
+				counter++;
+				userGuess = "";
+				//clears letters from the placeholders in the html//
+				document.getElementById("guessed").childNodes[1].innerHTML = "";
+				//hides div box placeholders
+				for (i=0; i<underline.childNodes.length; i++) {			
+					underline.removeChild(underline.childNodes[i]);					
+		  		}
+
+		  		for (i=0; i<underline.childNodes.length; i++) {
+        			underline.innerHTML = "";
+    			}	  		
+		 
+    			//goes to next word in the array to continue playing the game//
+				if (words[counter]) {	
+					nextWord();
+				}
+				else {
+	console.log("NO MORE WORDS - GAMES OVER");
+					//resets game back to page load appearance//
+					totalWins = 0;
+					document.getElementById("wins").childNodes[1].innerHTML = "";
+					document.getElementById("currentWord").style.display = "none";
+					document.getElementById("totals").style.display = "none";
+					document.getElementById("start").innerHTML = "Press any key to get started!";
+					location.reload();
+				}
+			}		
+		}
+	</script>
+	<audio controls>
+  		<source src="assets/images/SimpsonsIntro.wav" type="audio/wav">
+		Your browser does not support the audio element.
+	</audio>
+	<audio id="homerWooHoo">
+  		<source src="assets/images/homerWooHoo.wav" type="audio/wav">
+		Your browser does not support the audio element.
+	</audio>
+</body>	
+</html>
